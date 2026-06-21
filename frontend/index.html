@@ -5,22 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Collections Policy Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #14171C;
-    --bg-panel: #1B1F26;
-    --bg-panel-raised: #21262F;
-    --border: #2C323D;
-    --text: #EDEFF2;
-    --text-dim: #9AA3B0;
-    --text-faint: #5C6470;
-    --accent: #5B8DBE;
-    --accent-dim: #3A5670;
-    --amber: #C9A24B;
-    --amber-bg: #2A2418;
-    --green: #5F9E78;
-    --red: #B6604F;
+    --bg: #11141A;
+    --bg-panel: #181C24;
+    --bg-panel-raised: #1F242E;
+    --bg-evidence: #1A2A24;
+    --border: #2A303C;
+    --border-soft: #20242E;
+    --text: #EDEFF3;
+    --text-dim: #939DAD;
+    --text-faint: #545C6B;
+    --accent: #6FA3D8;
+    --accent-dim: #3D5670;
+    --accent-bright: #8FBCE8;
+    --amber: #D4AC5C;
+    --amber-bg: #2B2415;
+    --amber-border: #4A3C1E;
+    --green: #6BB088;
+    --green-bg: #15261D;
+    --green-border: #244533;
+    --red: #C97468;
+    --red-bg: #2A1916;
+    --red-border: #482620;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
@@ -30,223 +38,368 @@
   body {
     margin: 0;
     background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 800px 400px at 50% -10%, rgba(111,163,216,0.06), transparent);
     color: var(--text);
     font-family: var(--sans);
     min-height: 100vh;
   }
 
   .shell {
-    max-width: 1100px;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 32px 24px 80px;
+    padding: 28px 24px 100px;
   }
 
   header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 20px;
-    margin-bottom: 28px;
+    padding-bottom: 22px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-soft);
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 14px;
   }
 
   .brand {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
+    align-items: center;
+    gap: 14px;
   }
 
   .brand-mark {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 12px;
     color: var(--accent);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
+    font-weight: 500;
     border: 1px solid var(--accent-dim);
-    padding: 3px 8px;
-    border-radius: 3px;
+    background: rgba(111,163,216,0.07);
+    padding: 4px 9px;
+    border-radius: 4px;
   }
 
   h1 {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 600;
     margin: 0;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
 
-  .status-line {
-    font-family: var(--mono);
+  .subtitle {
     font-size: 12px;
     color: var(--text-faint);
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-soft);
+    padding: 6px 12px;
+    border-radius: 16px;
   }
 
   .status-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--green);
-    margin-right: 6px;
+    box-shadow: 0 0 6px rgba(107,176,136,0.6);
+    flex-shrink: 0;
   }
 
-  .status-dot.offline { background: var(--red); }
+  .status-dot.offline {
+    background: var(--red);
+    box-shadow: 0 0 6px rgba(201,116,104,0.6);
+  }
 
-  main {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .capability-strip {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    padding: 11px 16px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+  }
+
+  .capability-strip label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-dim);
+  }
+
+  .capability-strip input[type="checkbox"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .capability-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+  }
+
+  .capability-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .capability-tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--accent-bright);
+    background: rgba(111,163,216,0.08);
+    border: 1px solid var(--accent-dim);
+    padding: 2px 8px;
+    border-radius: 10px;
   }
 
   .thread {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 22px;
   }
 
   .turn {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
+    animation: rise 0.35s ease both;
   }
 
-  .turn.has-evidence {
-    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
-    align-items: start;
-  }
-
-  @media (max-width: 760px) {
-    .turn.has-evidence { grid-template-columns: 1fr; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .query-row {
-    grid-column: 1 / -1;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--text-dim);
-    padding: 10px 14px;
+    padding: 9px 14px;
     background: var(--bg-panel);
     border-left: 2px solid var(--accent-dim);
-    border-radius: 2px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
 
-  .query-row::before {
-    content: "QUERY ";
+  .query-row .tag {
     color: var(--accent);
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .turn-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  .turn-body.no-evidence {
+    grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 800px) {
+    .turn-body { grid-template-columns: 1fr; }
   }
 
   .answer-panel {
     background: var(--bg-panel);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 18px 20px;
+    border-radius: 10px;
+    padding: 20px 22px;
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
-  .answer-panel p { margin: 0 0 12px; }
+  .answer-panel p { margin: 0 0 13px; }
   .answer-panel p:last-child { margin-bottom: 0; }
+
+  .answer-panel .cite {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(111,163,216,0.1);
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
 
   .caveat-banner {
     display: flex;
-    gap: 8px;
+    gap: 9px;
     align-items: flex-start;
     background: var(--amber-bg);
-    border: 1px solid #4A3C20;
+    border: 1px solid var(--amber-border);
     color: var(--amber);
     font-family: var(--mono);
     font-size: 12px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    margin-top: 12px;
-    line-height: 1.5;
+    padding: 10px 13px;
+    border-radius: 6px;
+    margin-top: 14px;
+    line-height: 1.55;
   }
 
+  .caveat-banner i {
+    font-style: normal;
+    flex-shrink: 0;
+  }
+
+  .pii-flag {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  /* Evidence panel — the differentiator, deliberately the most visually resolved part of the UI */
   .evidence-panel {
-    background: var(--bg-panel-raised);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px 16px;
+    background: var(--bg-evidence);
+    border: 1px solid var(--green-border);
+    border-radius: 10px;
+    padding: 16px 18px;
     font-family: var(--mono);
     font-size: 12px;
+  }
+
+  .evidence-panel.flagged {
+    background: var(--amber-bg);
+    border-color: var(--amber-border);
+  }
+
+  .evidence-panel.failed {
+    background: var(--red-bg);
+    border-color: var(--red-border);
   }
 
   .evidence-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 13px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
   .evidence-title {
     color: var(--text-dim);
-    letter-spacing: 0.06em;
-    font-size: 11px;
+    letter-spacing: 0.07em;
+    font-size: 10.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .verdict-badge {
     font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 3px;
-    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
     font-weight: 600;
   }
 
-  .verdict-grounded { background: #1C3128; color: var(--green); }
-  .verdict-ungrounded { background: #3A2420; color: var(--red); }
-  .verdict-partial { background: var(--amber-bg); color: var(--amber); }
+  .verdict-grounded { background: rgba(107,176,136,0.15); color: var(--green); }
+  .verdict-ungrounded { background: rgba(201,116,104,0.15); color: var(--red); }
+  .verdict-partial,
+  .verdict-unknown { background: rgba(212,172,92,0.15); color: var(--amber); }
 
   .source-item {
-    padding: 9px 0;
-    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
   }
   .source-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .source-item:first-child { padding-top: 0; }
+
+  .source-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-faint);
+    font-size: 9px;
+    margin-right: 6px;
+  }
 
   .source-name {
-    color: var(--accent);
+    color: var(--accent-bright);
     font-weight: 500;
     font-size: 12px;
   }
 
   .source-meta {
     color: var(--text-faint);
-    font-size: 11px;
-    margin-top: 2px;
+    font-size: 10.5px;
+    margin-top: 3px;
   }
 
   .source-excerpt {
     color: var(--text-dim);
     font-size: 11px;
-    margin-top: 5px;
-    line-height: 1.5;
-    padding-left: 8px;
-    border-left: 1px solid var(--border);
+    margin-top: 7px;
+    line-height: 1.55;
+    padding-left: 9px;
+    border-left: 2px solid rgba(255,255,255,0.08);
   }
 
   .latency-strip {
-    grid-column: 1 / -1;
+    margin-top: 8px;
     font-family: var(--mono);
     font-size: 10px;
     color: var(--text-faint);
     display: flex;
-    gap: 16px;
+    gap: 14px;
     flex-wrap: wrap;
-    padding: 0 2px;
+    padding: 0 4px;
+  }
+
+  .latency-strip span::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    margin-right: 6px;
+    vertical-align: middle;
   }
 
   .input-bar {
     position: sticky;
-    bottom: 16px;
-    margin-top: 8px;
+    bottom: 18px;
+    margin-top: 4px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     background: var(--bg-panel);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px;
+    border-radius: 12px;
+    padding: 7px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
 
   .input-bar input {
@@ -257,7 +410,7 @@
     color: var(--text);
     font-family: var(--sans);
     font-size: 14px;
-    padding: 10px 12px;
+    padding: 11px 13px;
   }
 
   .input-bar input::placeholder { color: var(--text-faint); }
@@ -266,13 +419,17 @@
     background: var(--accent);
     color: #0E1318;
     border: none;
-    border-radius: 5px;
-    padding: 0 18px;
+    border-radius: 7px;
+    padding: 0 20px;
     font-family: var(--sans);
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
   }
+
+  .input-bar button:hover:not(:disabled) { background: var(--accent-bright); }
+  .input-bar button:active:not(:disabled) { transform: scale(0.97); }
 
   .input-bar button:disabled {
     background: var(--bg-panel-raised);
@@ -280,70 +437,107 @@
     cursor: not-allowed;
   }
 
-  .options-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-  }
-
-  .options-row label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-  }
-
   .empty-state {
     text-align: center;
-    padding: 60px 20px;
-    color: var(--text-faint);
+    padding: 70px 20px 50px;
   }
 
   .empty-state-mark {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--accent-dim);
-    margin-bottom: 10px;
-    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .empty-state-headline {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 7px;
+  }
+
+  .empty-state-sub {
+    color: var(--text-dim);
+    font-size: 13.5px;
+    max-width: 440px;
+    margin: 0 auto;
+    line-height: 1.6;
   }
 
   .sample-queries {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 9px;
     justify-content: center;
-    margin-top: 18px;
+    margin-top: 24px;
   }
 
   .sample-chip {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-dim);
     border: 1px solid var(--border);
-    padding: 6px 11px;
-    border-radius: 14px;
+    padding: 7px 13px;
+    border-radius: 16px;
     cursor: pointer;
     background: var(--bg-panel);
+    transition: border-color 0.15s, color 0.15s, transform 0.1s;
   }
 
-  .sample-chip:hover { border-color: var(--accent-dim); color: var(--accent); }
+  .sample-chip:hover {
+    border-color: var(--accent-dim);
+    color: var(--accent-bright);
+    transform: translateY(-1px);
+  }
+
+  .sample-chip.edge {
+    border-color: var(--amber-border);
+    color: var(--amber);
+  }
+
+  .sample-chip.edge:hover {
+    border-color: var(--amber);
+  }
 
   .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 9px;
     font-family: var(--mono);
     font-size: 12px;
     color: var(--text-faint);
-    padding: 16px 20px;
+    padding: 18px 22px;
   }
 
-  .pii-flag {
+  .typing-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .typing-dots span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes pulse {
+    0%, 60%, 100% { opacity: 0.25; transform: scale(0.8); }
+    30% { opacity: 1; transform: scale(1.1); }
+  }
+
+  .error-panel {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13.5px;
     font-family: var(--mono);
-    font-size: 11px;
-    color: var(--amber);
-    margin-top: 8px;
   }
 </style>
 </head>
@@ -351,29 +545,38 @@
 <div class="shell">
   <header>
     <div class="brand">
-      <span class="brand-mark">RAG/01</span>
-      <h1>Collections Policy Assistant</h1>
+      <span class="brand-mark">RAG · 01</span>
+      <div>
+        <h1>Collections Policy Assistant</h1>
+        <div class="subtitle">hybrid retrieval · cross-encoder rerank · groundedness guardrails</div>
+      </div>
     </div>
-    <div class="status-line"><span class="status-dot" id="statusDot"></span><span id="statusText">checking backend…</span></div>
+    <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">checking backend…</span></div>
   </header>
 
   <main>
-    <div class="options-row">
-      <label><input type="checkbox" id="includeSuperseded"> include superseded policy versions</label>
-      <span style="color: var(--text-faint)">·</span>
-      <span>hybrid retrieval + cross-encoder rerank + groundedness check active</span>
+    <div class="capability-strip">
+      <label><input type="checkbox" id="includeSuperseded"> include superseded versions</label>
+      <span class="capability-divider"></span>
+      <div class="capability-tags">
+        <span class="capability-tag">hybrid search</span>
+        <span class="capability-tag">rerank</span>
+        <span class="capability-tag">groundedness check</span>
+        <span class="capability-tag">citation verify</span>
+      </div>
     </div>
 
     <div class="thread" id="thread">
       <div class="empty-state" id="emptyState">
         <div class="empty-state-mark">NO ACTIVE QUERY</div>
-        <div>Ask a question about collections call practices, data retention, or hardship programs.</div>
+        <div class="empty-state-headline">Ask a question grounded in policy</div>
+        <div class="empty-state-sub">Calling hours, required disclosures, hardship programs, or data retention — every answer cites its source and is checked for groundedness before it reaches you.</div>
         <div class="sample-queries">
           <span class="sample-chip" data-q="What hours can a collector call a consumer?">calling hours</span>
           <span class="sample-chip" data-q="What disclosure is required on the first call about a debt?">required disclosure</span>
           <span class="sample-chip" data-q="What is the application fee for a loan modification?">loan modification fee</span>
           <span class="sample-chip" data-q="How long do we retain call recordings?">retention period</span>
-          <span class="sample-chip" data-q="What is the capital of France?">out-of-scope test</span>
+          <span class="sample-chip edge" data-q="What is the capital of France?">⚠ out-of-scope test</span>
         </div>
       </div>
     </div>
@@ -386,7 +589,7 @@
 </div>
 
 <script>
-  // Point this at your deployed backend URL (Render) or http://localhost:8000 for local dev.
+  // Point this at your deployed backend URL, or http://localhost:8000 for local dev.
   const API_BASE = window.API_BASE || "http://localhost:8000";
 
   const thread = document.getElementById("thread");
@@ -424,7 +627,14 @@
   function verdictBadgeClass(verdict) {
     if (verdict === "GROUNDED") return "verdict-grounded";
     if (verdict === "UNGROUNDED") return "verdict-ungrounded";
+    if (verdict === "UNKNOWN") return "verdict-unknown";
     return "verdict-partial";
+  }
+
+  function evidencePanelClass(verdict) {
+    if (verdict === "UNGROUNDED") return "failed";
+    if (verdict === "PARTIALLY_GROUNDED" || verdict === "UNKNOWN") return "flagged";
+    return "";
   }
 
   function escapeHtml(str) {
@@ -433,68 +643,87 @@
     return div.innerHTML;
   }
 
+  function formatAnswer(text) {
+    const escaped = escapeHtml(text);
+    return escaped.replace(/\[Source:\s*([^\]]+)\]/g, '<span class="cite">[$1]</span>');
+  }
+
   function renderTurn(query, data) {
     if (emptyState) emptyState.remove();
 
     const turn = document.createElement("div");
-    turn.className = data.sources && data.sources.length ? "turn has-evidence" : "turn";
+    turn.className = "turn";
 
     const queryRow = document.createElement("div");
     queryRow.className = "query-row";
-    queryRow.textContent = query;
+    queryRow.innerHTML = `<span class="tag">QUERY</span><span>${escapeHtml(query)}</span>`;
     turn.appendChild(queryRow);
+
+    const body = document.createElement("div");
+    const hasEvidence = data.sources && data.sources.length;
+    body.className = hasEvidence ? "turn-body" : "turn-body no-evidence";
 
     const answerPanel = document.createElement("div");
     answerPanel.className = "answer-panel";
-    const paragraphs = data.answer.split("\n\n").filter(p => p.trim());
-    answerPanel.innerHTML = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join("");
+    const mainText = data.answer.split("\n\n⚠️")[0];
+    const paragraphs = mainText.split("\n\n").filter(p => p.trim());
+    answerPanel.innerHTML = paragraphs.map(p => `<p>${formatAnswer(p)}</p>`).join("");
+
+    if (data.answer.includes("⚠️")) {
+      const caveat = document.createElement("div");
+      caveat.className = "caveat-banner";
+      caveat.innerHTML = `<i class="ti ti-alert-triangle">⚠</i><span>Parts of this answer could not be fully verified against the source documents. Confirm critical details with the cited policy document.</span>`;
+      answerPanel.appendChild(caveat);
+    }
 
     if (data.guardrails && data.guardrails.input && data.guardrails.input.pii_detected && data.guardrails.input.pii_detected.length) {
       const flag = document.createElement("div");
       flag.className = "pii-flag";
-      flag.textContent = `⚠ PII redacted from query before processing: ${data.guardrails.input.pii_detected.join(", ")}`;
+      flag.textContent = `PII redacted from query before processing: ${data.guardrails.input.pii_detected.join(", ")}`;
       answerPanel.appendChild(flag);
     }
 
-    turn.appendChild(answerPanel);
+    body.appendChild(answerPanel);
 
-    if (data.sources && data.sources.length) {
-      const evidencePanel = document.createElement("div");
-      evidencePanel.className = "evidence-panel";
-
+    if (hasEvidence) {
       const verdict = data.guardrails && data.guardrails.output && data.guardrails.output.groundedness
         ? data.guardrails.output.groundedness.verdict : null;
 
-      let headerHtml = `<div class="evidence-header"><span class="evidence-title">SOURCES (${data.sources.length})</span>`;
+      const evidencePanel = document.createElement("div");
+      evidencePanel.className = `evidence-panel ${evidencePanelClass(verdict)}`;
+
+      let headerHtml = `<div class="evidence-header"><span class="evidence-title">SOURCES · ${data.sources.length}</span>`;
       if (verdict) {
         headerHtml += `<span class="verdict-badge ${verdictBadgeClass(verdict)}">${verdict}</span>`;
       }
       headerHtml += `</div>`;
       evidencePanel.innerHTML = headerHtml;
 
-      data.sources.forEach(src => {
+      data.sources.forEach((src, i) => {
         const item = document.createElement("div");
         item.className = "source-item";
-        const score = src.rerank_score !== null && src.rerank_score !== undefined ? src.rerank_score.toFixed(3) : "—";
+        const score = src.rerank_score !== null && src.rerank_score !== undefined ? src.rerank_score.toFixed(2) : "—";
         item.innerHTML = `
-          <div class="source-name">${escapeHtml(src.source_file)}</div>
+          <div><span class="source-rank">${i + 1}</span><span class="source-name">${escapeHtml(src.source_file)}</span></div>
           <div class="source-meta">${escapeHtml(src.section || "")} ${src.version ? "· v" + escapeHtml(src.version) : ""} · score ${score}</div>
           <div class="source-excerpt">${escapeHtml(src.excerpt)}…</div>
         `;
         evidencePanel.appendChild(item);
       });
 
-      turn.appendChild(evidencePanel);
+      body.appendChild(evidencePanel);
     }
 
-    const latencyStrip = document.createElement("div");
-    latencyStrip.className = "latency-strip";
+    turn.appendChild(body);
+
     if (data.latency_ms) {
+      const latencyStrip = document.createElement("div");
+      latencyStrip.className = "latency-strip";
       latencyStrip.innerHTML = Object.entries(data.latency_ms)
-        .map(([k, v]) => `<span>${k.replace(/_ms$/, "")}: ${v}ms</span>`)
+        .map(([k, v]) => `<span>${k.replace(/_ms$/, "")} ${v}ms</span>`)
         .join("");
+      turn.appendChild(latencyStrip);
     }
-    turn.appendChild(latencyStrip);
 
     thread.appendChild(turn);
     turn.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -504,7 +733,7 @@
     const indicator = document.createElement("div");
     indicator.className = "typing-indicator";
     indicator.id = "typingIndicator";
-    indicator.textContent = "retrieving · reranking · generating…";
+    indicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div><span>retrieving · reranking · generating</span>`;
     thread.appendChild(indicator);
     indicator.scrollIntoView({ behavior: "smooth", block: "end" });
   }
@@ -532,8 +761,7 @@
     } catch (e) {
       document.getElementById("typingIndicator")?.remove();
       const errorPanel = document.createElement("div");
-      errorPanel.className = "answer-panel";
-      errorPanel.style.borderColor = "var(--red)";
+      errorPanel.className = "error-panel";
       errorPanel.textContent = "Request failed — check that the backend is running and reachable at " + API_BASE;
       thread.appendChild(errorPanel);
     } finally {
