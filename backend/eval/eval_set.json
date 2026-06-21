@@ -1,0 +1,73 @@
+[
+  {
+    "query": "What hours can a collector call a consumer?",
+    "expected_source": "collections_call_practices_policy.md",
+    "expected_section_contains": "Permitted Calling Hours"
+  },
+  {
+    "query": "What disclosure must be given on the first call to a consumer about a debt?",
+    "expected_source": "collections_call_practices_policy.md",
+    "expected_section_contains": "Required Disclosures"
+  },
+  {
+    "query": "How many times can we call someone in a week?",
+    "expected_source": "collections_call_practices_policy.md",
+    "expected_section_contains": "Prohibited Contact Methods"
+  },
+  {
+    "query": "What happens if a consumer sends a written cease and desist letter?",
+    "expected_source": "collections_call_practices_policy.md",
+    "expected_section_contains": "Cease and Desist"
+  },
+  {
+    "query": "Can a collector contact a consumer's employer?",
+    "expected_source": "collections_call_practices_policy.md",
+    "expected_section_contains": "Prohibited Contact Methods"
+  },
+  {
+    "query": "How long do we need to keep call recordings?",
+    "expected_source": "data_retention_policy.md",
+    "expected_section_contains": "Call Recordings"
+  },
+  {
+    "query": "What's the retention period for written correspondence with consumers?",
+    "expected_source": "data_retention_policy.md",
+    "expected_section_contains": "Written Correspondence"
+  },
+  {
+    "query": "What happens to records under a litigation hold?",
+    "expected_source": "data_retention_policy.md",
+    "expected_section_contains": "Litigation Holds"
+  },
+  {
+    "query": "What is the application fee for a loan modification?",
+    "expected_source": "hardship_loss_mitigation_guide.md",
+    "expected_section_contains": "Fee Schedule"
+  },
+  {
+    "query": "How long can a temporary payment reduction last?",
+    "expected_source": "hardship_loss_mitigation_guide.md",
+    "expected_section_contains": "Temporary Payment Reduction"
+  },
+  {
+    "query": "What documentation does a consumer need for a medical hardship claim?",
+    "expected_source": "hardship_loss_mitigation_guide.md",
+    "expected_section_contains": "Documentation Required"
+  },
+  {
+    "query": "Is forbearance available for unsecured products like credit cards?",
+    "expected_source": "hardship_loss_mitigation_guide.md",
+    "expected_section_contains": "Forbearance"
+  },
+  {
+    "query": "What should a collector do if a consumer mentions they lost their job?",
+    "expected_source": "hardship_loss_mitigation_guide.md",
+    "expected_section_contains": "Referral Process"
+  },
+  {
+    "query": "What is the capital of France?",
+    "expected_source": null,
+    "expected_section_contains": null,
+    "note": "Deliberately out-of-scope — used to test faithfulness/refusal, not retrieval recall."
+  }
+]

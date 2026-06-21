@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collections Policy Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14171C;
+    --bg-panel: #1B1F26;
+    --bg-panel-raised: #21262F;
+    --border: #2C323D;
+    --text: #EDEFF2;
+    --text-dim: #9AA3B0;
+    --text-faint: #5C6470;
+    --accent: #5B8DBE;
+    --accent-dim: #3A5670;
+    --amber: #C9A24B;
+    --amber-bg: #2A2418;
+    --green: #5F9E78;
+    --red: #B6604F;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+
+  .shell {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    border: 1px solid var(--accent-dim);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  h1 {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .status-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+  }
+
+  .status-dot.offline { background: var(--red); }
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .thread {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .turn {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .turn.has-evidence {
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .turn.has-evidence { grid-template-columns: 1fr; }
+  }
+
+  .query-row {
+    grid-column: 1 / -1;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 10px 14px;
+    background: var(--bg-panel);
+    border-left: 2px solid var(--accent-dim);
+    border-radius: 2px;
+  }
+
+  .query-row::before {
+    content: "QUERY ";
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .answer-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .answer-panel p { margin: 0 0 12px; }
+  .answer-panel p:last-child { margin-bottom: 0; }
+
+  .caveat-banner {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    background: var(--amber-bg);
+    border: 1px solid #4A3C20;
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  .evidence-panel {
+    background: var(--bg-panel-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .evidence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .evidence-title {
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    font-size: 11px;
+  }
+
+  .verdict-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  .verdict-grounded { background: #1C3128; color: var(--green); }
+  .verdict-ungrounded { background: #3A2420; color: var(--red); }
+  .verdict-partial { background: var(--amber-bg); color: var(--amber); }
+
+  .source-item {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .source-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .source-name {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .source-meta {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .source-excerpt {
+    color: var(--text-dim);
+    font-size: 11px;
+    margin-top: 5px;
+    line-height: 1.5;
+    padding-left: 8px;
+    border-left: 1px solid var(--border);
+  }
+
+  .latency-strip {
+    grid-column: 1 / -1;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0 2px;
+  }
+
+  .input-bar {
+    position: sticky;
+    bottom: 16px;
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px;
+  }
+
+  .input-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .input-bar input::placeholder { color: var(--text-faint); }
+
+  .input-bar button {
+    background: var(--accent);
+    color: #0E1318;
+    border: none;
+    border-radius: 5px;
+    padding: 0 18px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .input-bar button:disabled {
+    background: var(--bg-panel-raised);
+    color: var(--text-faint);
+    cursor: not-allowed;
+  }
+
+  .options-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .options-row label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-faint);
+  }
+
+  .empty-state-mark {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent-dim);
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .sample-queries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  .sample-chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 6px 11px;
+    border-radius: 14px;
+    cursor: pointer;
+    background: var(--bg-panel);
+  }
+
+  .sample-chip:hover { border-color: var(--accent-dim); color: var(--accent); }
+
+  .typing-indicator {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+    padding: 16px 20px;
+  }
+
+  .pii-flag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand">
+      <span class="brand-mark">RAG/01</span>
+      <h1>Collections Policy Assistant</h1>
+    </div>
+    <div class="status-line"><span class="status-dot" id="statusDot"></span><span id="statusText">checking backend…</span></div>
+  </header>
+
+  <main>
+    <div class="options-row">
+      <label><input type="checkbox" id="includeSuperseded"> include superseded policy versions</label>
+      <span style="color: var(--text-faint)">·</span>
+      <span>hybrid retrieval + cross-encoder rerank + groundedness check active</span>
+    </div>
+
+    <div class="thread" id="thread">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state-mark">NO ACTIVE QUERY</div>
+        <div>Ask a question about collections call practices, data retention, or hardship programs.</div>
+        <div class="sample-queries">
+          <span class="sample-chip" data-q="What hours can a collector call a consumer?">calling hours</span>
+          <span class="sample-chip" data-q="What disclosure is required on the first call about a debt?">required disclosure</span>
+          <span class="sample-chip" data-q="What is the application fee for a loan modification?">loan modification fee</span>
+          <span class="sample-chip" data-q="How long do we retain call recordings?">retention period</span>
+          <span class="sample-chip" data-q="What is the capital of France?">out-of-scope test</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-bar">
+      <input type="text" id="queryInput" placeholder="Ask about collections policy, hardship programs, or data retention…" />
+      <button id="sendBtn">Ask</button>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Point this at your deployed backend URL (Render) or http://localhost:8000 for local dev.
+  const API_BASE = window.API_BASE || "http://localhost:8000";
+
+  const thread = document.getElementById("thread");
+  const emptyState = document.getElementById("emptyState");
+  const input = document.getElementById("queryInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const includeSuperseded = document.getElementById("includeSuperseded");
+  const statusDot = document.getElementById("statusDot");
+  const statusText = document.getElementById("statusText");
+
+  async function checkHealth() {
+    try {
+      const res = await fetch(`${API_BASE}/health`);
+      const data = await res.json();
+      if (data.status === "ok") {
+        statusDot.classList.remove("offline");
+        statusText.textContent = `online · ${data.indexed_chunks} chunks indexed`;
+      } else {
+        throw new Error(data.detail || "unhealthy");
+      }
+    } catch (e) {
+      statusDot.classList.add("offline");
+      statusText.textContent = "backend unreachable";
+    }
+  }
+  checkHealth();
+
+  document.querySelectorAll(".sample-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      input.value = chip.dataset.q;
+      sendQuery();
+    });
+  });
+
+  function verdictBadgeClass(verdict) {
+    if (verdict === "GROUNDED") return "verdict-grounded";
+    if (verdict === "UNGROUNDED") return "verdict-ungrounded";
+    return "verdict-partial";
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderTurn(query, data) {
+    if (emptyState) emptyState.remove();
+
+    const turn = document.createElement("div");
+    turn.className = data.sources && data.sources.length ? "turn has-evidence" : "turn";
+
+    const queryRow = document.createElement("div");
+    queryRow.className = "query-row";
+    queryRow.textContent = query;
+    turn.appendChild(queryRow);
+
+    const answerPanel = document.createElement("div");
+    answerPanel.className = "answer-panel";
+    const paragraphs = data.answer.split("\n\n").filter(p => p.trim());
+    answerPanel.innerHTML = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join("");
+
+    if (data.guardrails && data.guardrails.input && data.guardrails.input.pii_detected && data.guardrails.input.pii_detected.length) {
+      const flag = document.createElement("div");
+      flag.className = "pii-flag";
+      flag.textContent = `⚠ PII redacted from query before processing: ${data.guardrails.input.pii_detected.join(", ")}`;
+      answerPanel.appendChild(flag);
+    }
+
+    turn.appendChild(answerPanel);
+
+    if (data.sources && data.sources.length) {
+      const evidencePanel = document.createElement("div");
+      evidencePanel.className = "evidence-panel";
+
+      const verdict = data.guardrails && data.guardrails.output && data.guardrails.output.groundedness
+        ? data.guardrails.output.groundedness.verdict : null;
+
+      let headerHtml = `<div class="evidence-header"><span class="evidence-title">SOURCES (${data.sources.length})</span>`;
+      if (verdict) {
+        headerHtml += `<span class="verdict-badge ${verdictBadgeClass(verdict)}">${verdict}</span>`;
+      }
+      headerHtml += `</div>`;
+      evidencePanel.innerHTML = headerHtml;
+
+      data.sources.forEach(src => {
+        const item = document.createElement("div");
+        item.className = "source-item";
+        const score = src.rerank_score !== null && src.rerank_score !== undefined ? src.rerank_score.toFixed(3) : "—";
+        item.innerHTML = `
+          <div class="source-name">${escapeHtml(src.source_file)}</div>
+          <div class="source-meta">${escapeHtml(src.section || "")} ${src.version ? "· v" + escapeHtml(src.version) : ""} · score ${score}</div>
+          <div class="source-excerpt">${escapeHtml(src.excerpt)}…</div>
+        `;
+        evidencePanel.appendChild(item);
+      });
+
+      turn.appendChild(evidencePanel);
+    }
+
+    const latencyStrip = document.createElement("div");
+    latencyStrip.className = "latency-strip";
+    if (data.latency_ms) {
+      latencyStrip.innerHTML = Object.entries(data.latency_ms)
+        .map(([k, v]) => `<span>${k.replace(/_ms$/, "")}: ${v}ms</span>`)
+        .join("");
+    }
+    turn.appendChild(latencyStrip);
+
+    thread.appendChild(turn);
+    turn.scrollIntoView({ behavior: "smooth", block: "end" });
+  }
+
+  function renderTyping() {
+    const indicator = document.createElement("div");
+    indicator.className = "typing-indicator";
+    indicator.id = "typingIndicator";
+    indicator.textContent = "retrieving · reranking · generating…";
+    thread.appendChild(indicator);
+    indicator.scrollIntoView({ behavior: "smooth", block: "end" });
+  }
+
+  async function sendQuery() {
+    const query = input.value.trim();
+    if (!query) return;
+
+    input.value = "";
+    sendBtn.disabled = true;
+    renderTyping();
+
+    try {
+      const res = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query,
+          include_superseded: includeSuperseded.checked,
+        }),
+      });
+      const data = await res.json();
+      document.getElementById("typingIndicator")?.remove();
+      renderTurn(query, data);
+    } catch (e) {
+      document.getElementById("typingIndicator")?.remove();
+      const errorPanel = document.createElement("div");
+      errorPanel.className = "answer-panel";
+      errorPanel.style.borderColor = "var(--red)";
+      errorPanel.textContent = "Request failed — check that the backend is running and reachable at " + API_BASE;
+      thread.appendChild(errorPanel);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", sendQuery);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendQuery();
+  });
+</script>
+</body>
+</html>
