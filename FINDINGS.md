@@ -2,7 +2,7 @@
 
 Real issues found through hands-on testing of the deployed system, and the
 fixes applied. Kept as a record because this — not the original build — is
-the strongest interview material in this project: evidence of testing your
+the strongest material in this project: evidence of testing your
 own system adversarially and finding genuine, specific calibration gaps.
 
 ---
